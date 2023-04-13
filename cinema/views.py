@@ -12,7 +12,6 @@ from rest_framework.viewsets import GenericViewSet
 
 from cinema.models import Genre, Actor, CinemaHall, Movie, MovieSession, Order
 from cinema.permissions import IsAdminOrIfAuthenticatedReadOnly
-
 from cinema.serializers import (
     GenreSerializer,
     ActorSerializer,
@@ -34,6 +33,7 @@ class GenreViewSet(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
+    """Get, Post endpoints for Genre view"""
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -44,6 +44,7 @@ class ActorViewSet(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
+    """Get, Post endpoints for Actor view"""
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -54,6 +55,7 @@ class CinemaHallViewSet(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
+    """Get, Post endpoints for Cinema Hall view"""
     queryset = CinemaHall.objects.all()
     serializer_class = CinemaHallSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -65,6 +67,7 @@ class MovieViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
+    """Get, Post, Retrieve endpoints for Movie view"""
     queryset = Movie.objects.prefetch_related("genres", "actors")
     serializer_class = MovieSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -148,13 +151,14 @@ class MovieViewSet(
 
 
 class MovieSessionViewSet(viewsets.ModelViewSet):
+    """Get, Post, Retrieve, Put, Patch, Delete endpoints for Movie Session view"""
     queryset = (
         MovieSession.objects.all()
         .select_related("movie", "cinema_hall")
         .annotate(
             tickets_available=(
-                F("cinema_hall__rows") * F("cinema_hall__seats_in_row")
-                - Count("tickets")
+                    F("cinema_hall__rows") * F("cinema_hall__seats_in_row")
+                    - Count("tickets")
             )
         )
     )
@@ -162,6 +166,7 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
+        """Retrieve Movie Session with filters"""
         date = self.request.query_params.get("date")
         movie_id_str = self.request.query_params.get("movie")
 
@@ -196,8 +201,8 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
                 "date",
                 type=OpenApiTypes.DATE,
                 description=(
-                    "Filter by datetime of MovieSession "
-                    "(ex. ?date=2022-10-23)"
+                        "Filter by datetime of MovieSession "
+                        "(ex. ?date=2022-10-23)"
                 ),
             ),
         ]
@@ -216,6 +221,7 @@ class OrderViewSet(
     mixins.CreateModelMixin,
     GenericViewSet,
 ):
+    """Get, Post endpoints for Order view"""
     queryset = Order.objects.prefetch_related(
         "tickets__movie_session__movie", "tickets__movie_session__cinema_hall"
     )
@@ -224,6 +230,7 @@ class OrderViewSet(
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
+        """Get, all orders with current user"""
         return Order.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):

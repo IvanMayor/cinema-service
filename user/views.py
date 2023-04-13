@@ -6,10 +6,12 @@ from user.serializers import UserSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
+    """Post user endpoint"""
     serializer_class = UserSerializer
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
+    """Retrieve, Put, Patch endpoint for user"""
     serializer_class = UserSerializer
     authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)

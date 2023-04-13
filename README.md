@@ -37,14 +37,8 @@ venv/Scripts/activate
 ```
 pip install -r requirements.txt
 ```
-- Set environ variables
-```
-set POSTGRES_HOST=<your db hostname>
-set POSTGRES_DB=<your db name>
-set POSTGRES_USER=<your db username>
-set POSTGRES_PASSWORD=<your db password>
-set SECRET_KEY=<your secret key>
-```
+- Create .env file and set environ variables, check *.env.sample* file
+
 - Run migrations:
 ```
 python manage.py migrate
@@ -55,11 +49,20 @@ python manage.py runserver
 
 ### Docker should be installed
 
+- create .env.docker file and set environ variables check example in .env.docker.sample file
+
 ```
 docker-compose build
 docker-compose up
 ```
+
 ## Getting access
 
 - create user /api/user/register/
 - get access token /api/user/token/
+
+## Run test with:
+
+```
+python manage.py test
+```
