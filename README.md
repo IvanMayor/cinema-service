@@ -1,7 +1,14 @@
 # Cinema API
 
 API service for cinema management written on DRF
-
+## Technology stack:
+- Python
+- Django
+- Django ORM
+- Django REST framework
+- Swagger
+- PostgreSQL
+- Docker
 ## Features:
  
 - JWT authenticated
